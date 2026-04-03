@@ -1,6 +1,3 @@
-[phases.setup]
-nixPkgs = ["php83", "php83Extensions.mbstring", "php83Extensions.xml", "php83Extensions.curl", "php83Extensions.zip", "php83Extensions.pdo", "php83Extensions.pdo_mysql", "php83Extensions.tokenizer", "php83Extensions.bcmath", "nodejs_20"]
-
 [phases.install]
 cmds = [
     "composer install --no-dev --optimize-autoloader",
@@ -10,12 +7,3 @@ cmds = [
 
 [start]
 cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
-```
-
----
-
-## Step 2 — Verify the file was actually pushed to GitHub
-
-Go to your GitHub repository in the browser:
-```
-https://github.com/YOUR_USERNAME/notes-app
