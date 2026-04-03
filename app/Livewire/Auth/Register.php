@@ -4,7 +4,6 @@ namespace App\Livewire\Auth;
 
 use Livewire\Component;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class Register extends Component
@@ -25,15 +24,14 @@ class Register extends Component
     {
         $this->validate();
 
-        $user = User::create([
+        User::create([
             'name'     => $this->name,
             'email'    => $this->email,
             'password' => Hash::make($this->password),
         ]);
 
-        Auth::login($user);
-
-        return redirect()->intended('/notes');
+        session()->flash('success', 'Account created successfully! Please sign in.');
+        return redirect()->route('login');
     }
 
     public function render()

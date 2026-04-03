@@ -4,6 +4,13 @@
         <h1 class="text-2xl font-semibold text-gray-800 mb-1">Welcome back</h1>
         <p class="text-sm text-gray-500 mb-6">Sign in to your notes</p>
 
+        {{-- Success message from registration --}}
+        @if (session()->has('success'))
+            <div class="mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <form wire:submit.prevent="login" class="space-y-4">
 
             {{-- Email --}}
