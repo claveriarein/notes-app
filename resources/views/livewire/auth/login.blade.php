@@ -47,7 +47,7 @@
                 wire:loading.attr="disabled"
             >
                 <span wire:loading.remove>Sign in</span>
-                <span wire:loading>Signing in...</span>
+                <span wire:loading class="hidden">Signing in...</span>
             </button>
 
         </form>

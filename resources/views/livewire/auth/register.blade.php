@@ -69,7 +69,7 @@
                 wire:loading.attr="disabled"
             >
                 <span wire:loading.remove>Create account</span>
-                <span wire:loading>Creating account...</span>
+                <span wire:loading class="hidden">Creating account...</span>
             </button>
 
         </form>
