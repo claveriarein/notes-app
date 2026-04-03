@@ -27,6 +27,9 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect('/notes');
+    }
     return redirect('/login');
 });
 
