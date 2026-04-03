@@ -5,6 +5,8 @@ namespace App\Livewire\Auth;
 use Livewire\Component;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class Register extends Component
 {
@@ -32,6 +34,18 @@ class Register extends Component
 
         session()->flash('success', 'Account created successfully! Please sign in.');
         return redirect()->route('login');
+    }
+
+    /**
+     * Skip registration and go directly to notes as guest
+     */
+    public function skip()
+    {
+        // Create a temporary guest session
+        session()->put('guest_mode', true);
+        session()->put('guest_id', Str::random(32));
+        
+        return redirect()->route('notes.index');
     }
 
     public function render()

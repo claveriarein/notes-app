@@ -7,6 +7,7 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Notes\NoteList;
 use App\Livewire\Notes\NoteCreate;
 use App\Livewire\Notes\NoteEdit;
+use App\Livewire\Profile;
 
 // Livewire assets
 Route::get('/livewire/livewire.js', function () {
@@ -30,6 +31,21 @@ Route::get('/livewire/livewire.min.js', function () {
         'Cache-Control' => 'public, max-age=31536000',
     ]);
 })->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
+// Profile routes (auth-protected)
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', Profile::class)->name('profile');
+
+    // Account deletion
+    Route::delete('/profile', function () {
+        $user = auth()->user();
+        auth()->logout();
+        $user->delete();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
+    })->name('profile.destroy');
+});
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');

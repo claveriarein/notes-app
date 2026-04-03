@@ -18,6 +18,12 @@ class NoteCreate extends Component
 
     public function save()
     {
+        // ADD THIS - Block guests from creating notes
+        if (session()->has('guest_mode')) {
+            session()->flash('error', 'Please create an account to save notes!');
+            return redirect()->route('register');
+        }
+
         $this->validate();
 
         Note::create([
