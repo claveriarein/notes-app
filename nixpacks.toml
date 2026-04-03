@@ -14,8 +14,8 @@ cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$P
 
 ---
 
-## Fix 4 — Add a `Procfile` as backup
+## Step 2 — Verify the file was actually pushed to GitHub
 
-Create a new file called `Procfile` (no extension) in your project root:
+Go to your GitHub repository in the browser:
 ```
-web: php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT
+https://github.com/YOUR_USERNAME/notes-app
