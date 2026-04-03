@@ -8,6 +8,17 @@ use App\Livewire\Notes\NoteList;
 use App\Livewire\Notes\NoteCreate;
 use App\Livewire\Notes\NoteEdit;
 
+// Livewire assets
+Route::get('/livewire/livewire.js', function () {
+    $path = base_path('vendor/livewire/livewire/dist/livewire.js');
+    return response()->file($path, ['Content-Type' => 'application/javascript']);
+});
+
+Route::get('/livewire/livewire.min.js', function () {
+    $path = base_path('vendor/livewire/livewire/dist/livewire.min.js');
+    return response()->file($path, ['Content-Type' => 'application/javascript']);
+});
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
