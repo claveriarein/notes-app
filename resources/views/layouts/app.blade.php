@@ -8,10 +8,7 @@
     @livewireStyles
 </head>
 <body class="antialiased bg-gray-50">
-
     {{ $slot }}
-
     @livewireScripts
 </body>
 </html>
-```
