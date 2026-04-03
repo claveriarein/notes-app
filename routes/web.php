@@ -4,21 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Landing;
 use App\Livewire\Notes\NoteList;
 use App\Livewire\Notes\NoteCreate;
 use App\Livewire\Notes\NoteEdit;
-use App\Livewire\Profile;
-
-// Livewire assets
-Route::get('/livewire/livewire.js', function () {
-    $path = base_path('vendor/livewire/livewire/dist/livewire.js');
-    return response()->file($path, ['Content-Type' => 'application/javascript']);
-});
-
-Route::get('/livewire/livewire.min.js', function () {
-    $path = base_path('vendor/livewire/livewire/dist/livewire.min.js');
-    return response()->file($path, ['Content-Type' => 'application/javascript']);
-});
 
 // Serve Livewire JS directly
 Route::get('/livewire/livewire.min.js', function () {
@@ -32,20 +21,7 @@ Route::get('/livewire/livewire.min.js', function () {
     ]);
 })->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
-// Profile routes (auth-protected)
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', Profile::class)->name('profile');
-
-    // Account deletion
-    Route::delete('/profile', function () {
-        $user = auth()->user();
-        auth()->logout();
-        $user->delete();
-        request()->session()->invalidate();
-        request()->session()->regenerateToken();
-        return redirect('/');
-    })->name('profile.destroy');
-});
+Route::get('/', Landing::class)->name('landing');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
@@ -62,14 +38,5 @@ Route::post('/logout', function () {
     Auth::logout();
     session()->invalidate();
     session()->regenerateToken();
-    return redirect('/login');
+    return redirect('/');
 })->name('logout');
-
-Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect('/notes');
-    }
-    return redirect('/login');
-});
-
-
