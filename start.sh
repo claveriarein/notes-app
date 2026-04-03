@@ -3,8 +3,8 @@
 echo "Clearing config..."
 php artisan config:clear
 
-echo "Running migrations..."
-php artisan migrate --force 2>&1 || echo "Migration failed but continuing..."
+echo "Running fresh migrations..."
+php artisan migrate:fresh --force 2>&1 || echo "Migration failed but continuing..."
 
 echo "Starting Apache..."
 rm -f /var/run/apache2/apache2.pid
