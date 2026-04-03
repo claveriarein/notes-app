@@ -19,6 +19,18 @@ Route::get('/livewire/livewire.min.js', function () {
     return response()->file($path, ['Content-Type' => 'application/javascript']);
 });
 
+// Serve Livewire JS directly
+Route::get('/livewire/livewire.min.js', function () {
+    $file = base_path('vendor/livewire/livewire/dist/livewire.min.js');
+    if (!file_exists($file)) {
+        $file = base_path('vendor/livewire/livewire/dist/livewire.js');
+    }
+    return response()->file($file, [
+        'Content-Type' => 'application/javascript',
+        'Cache-Control' => 'public, max-age=31536000',
+    ]);
+})->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');

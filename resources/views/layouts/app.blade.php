@@ -11,6 +11,7 @@
 
     {{ $slot }}
 
+    <script src="/livewire/livewire.min.js"></script>
     @livewireScripts
 </body>
 </html>
