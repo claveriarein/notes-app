@@ -1,344 +1,191 @@
-{{-- resources/views/livewire/profile.blade.php --}}
-<div>
-    {{-- Flash messages --}}
-    @if (session()->has('success'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 3500)"
-             x-transition:leave="transition ease-in duration-300"
-             x-transition:leave-start="opacity-100 translate-y-0"
-             x-transition:leave-end="opacity-0 -translate-y-2"
-             class="mb-6 flex items-center gap-3 rounded-2xl bg-violet-50 border border-violet-200 px-4 py-3 text-sm font-medium text-violet-700">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            {{ session('success') }}
-        </div>
-    @endif
+<div class="min-h-screen bg-gray-50">
 
-    {{-- ── Profile Info Section ── --}}
-    <div class="profile-card">
-        <div class="profile-card-header">
-            <div class="avatar-wrap">
-                <div class="avatar">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+    {{-- Navbar --}}
+    <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 </div>
-                <div class="avatar-ring"></div>
+                <span class="font-bold text-gray-800 text-lg">Notely</span>
             </div>
-            <div>
-                <h2 class="profile-name">{{ auth()->user()->name }}</h2>
-                <p class="profile-email">{{ auth()->user()->email }}</p>
-            </div>
+            <a href="{{ route('notes') }}" class="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Back to notes
+            </a>
+        </div>
+    </nav>
+
+    <div class="max-w-3xl mx-auto px-6 py-8">
+
+        {{-- Page header --}}
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-800">My Profile</h1>
+            <p class="text-sm text-gray-400 mt-1">Manage your account settings</p>
         </div>
 
-        <form wire:submit.prevent="updateProfile">
-            <div class="section-label">Profile information</div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="name">Full name</label>
-                    <div class="input-wrap">
-                        <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-                        </svg>
-                        <input type="text" id="name" wire:model="name" placeholder="Your full name">
-                    </div>
-                    @error('name') <div class="field-error">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email address</label>
-                    <div class="input-wrap">
-                        <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
-                        </svg>
-                        <input type="email" id="email" wire:model="email" placeholder="you@example.com">
-                    </div>
-                    @error('email') <div class="field-error">{{ $message }}</div> @enderror
-                </div>
+        {{-- Success message --}}
+        @if ($successMessage)
+            <div class="mb-6 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-2xl flex items-center gap-2">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {{ $successMessage }}
             </div>
+        @endif
 
-            <div class="form-actions">
-                <button type="submit" class="btn-primary" wire:loading.attr="disabled" wire:loading.class="loading">
-                    <span wire:loading.remove wire:target="updateProfile">Save profile</span>
-                    <span wire:loading wire:target="updateProfile">Saving…</span>
-                    <svg wire:loading.remove wire:target="updateProfile" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
-                    </svg>
+        {{-- Profile Photo + Name + Email --}}
+        <div class="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm mb-4">
+            <h2 class="text-base font-bold text-gray-700 mb-6">Profile Information</h2>
+
+            <form wire:submit.prevent="updateProfile" class="space-y-6">
+
+                {{-- Profile Photo --}}
+                <div class="flex items-center gap-6">
+                    <div class="relative">
+                        {{-- Current photo or initials --}}
+                        @if (Auth::user()->profile_photo)
+                            <img
+                                src="{{ asset('storage/' . Auth::user()->profile_photo) }}"
+                                class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-100"
+                                alt="Profile photo"
+                            />
+                        @elseif ($photo)
+                            <img
+                                src="{{ $photo->temporaryUrl() }}"
+                                class="w-20 h-20 rounded-2xl object-cover border-2 border-indigo-100"
+                                alt="Profile photo preview"
+                            />
+                        @else
+                            <div class="w-20 h-20 bg-indigo-100 rounded-2xl flex items-center justify-center border-2 border-indigo-100">
+                                <span class="text-2xl font-bold text-indigo-600">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                            </div>
+                        @endif
+
+                        {{-- Upload button overlay --}}
+                        <label class="absolute -bottom-2 -right-2 w-7 h-7 bg-indigo-600 rounded-xl flex items-center justify-center cursor-pointer hover:bg-indigo-700 transition-colors shadow-md">
+                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <input type="file" wire:model="photo" accept="image/*" class="hidden"/>
+                        </label>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-semibold text-gray-700">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">{{ Auth::user()->email }}</p>
+                        <p class="text-xs text-indigo-500 mt-1">Click the camera icon to change photo</p>
+                        @error('photo')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                {{-- Name --}}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Full Name</label>
+                    <input
+                        type="text"
+                        wire:model.defer="name"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-gray-50 @error('name') border-red-400 @enderror"
+                    />
+                    @error('name')
+                        <p class="text-xs text-red-500 mt-1 ml-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Email --}}
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Email Address</label>
+                    <input
+                        type="email"
+                        wire:model.defer="email"
+                        class="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-gray-50 @error('email') border-red-400 @enderror"
+                    />
+                    @error('email')
+                        <p class="text-xs text-red-500 mt-1 ml-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <button
+                    type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold px-8 py-3 rounded-2xl transition-all shadow-lg shadow-indigo-200"
+                    wire:loading.attr="disabled"
+                >
+                    <span wire:loading.remove>Save changes</span>
+                    <span wire:loading class="hidden">Saving...</span>
+                </button>
+
+            </form>
+        </div>
+
+        {{-- Password Section --}}
+        <div class="bg-white rounded-3xl border border-gray-100 p-8 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-base font-bold text-gray-700">Password</h2>
+                    <p class="text-xs text-gray-400 mt-0.5">Update your account password</p>
+                </div>
+                <button
+                    wire:click="$toggle('showPasswordForm')"
+                    class="text-sm text-indigo-600 font-semibold hover:underline"
+                >
+                    {{ $showPasswordForm ? 'Cancel' : 'Change password' }}
                 </button>
             </div>
-        </form>
-    </div>
 
-    {{-- ── Password Section ── --}}
-    <div class="profile-card" style="margin-top: 1.5rem;">
-        <form wire:submit.prevent="updatePassword">
-            <div class="section-label">Change password</div>
+            @if ($showPasswordForm)
+                <form wire:submit.prevent="updatePassword" class="space-y-4">
 
-            <div class="form-group">
-                <label for="current_password">Current password</label>
-                <div class="input-wrap">
-                    <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
-                    </svg>
-                    <input type="password" id="current_password" wire:model="current_password" placeholder="Enter current password">
-                </div>
-                @error('current_password') <div class="field-error">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="new_password">New password</label>
-                    <div class="input-wrap">
-                        <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/>
-                        </svg>
-                        <input type="password" id="new_password" wire:model="new_password" placeholder="Min. 8 characters">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Current Password</label>
+                        <input
+                            type="password"
+                            wire:model.defer="current_password"
+                            placeholder="••••••••"
+                            class="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-gray-50 @error('current_password') border-red-400 @enderror"
+                        />
+                        @error('current_password')
+                            <p class="text-xs text-red-500 mt-1 ml-1">{{ $message }}</p>
+                        @enderror
                     </div>
-                    @error('new_password') <div class="field-error">{{ $message }}</div> @enderror
-                </div>
 
-                <div class="form-group">
-                    <label for="new_password_confirmation">Confirm new password</label>
-                    <div class="input-wrap">
-                        <svg class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
-                        </svg>
-                        <input type="password" id="new_password_confirmation" wire:model="new_password_confirmation" placeholder="Repeat new password">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">New Password</label>
+                        <input
+                            type="password"
+                            wire:model.defer="new_password"
+                            placeholder="••••••••"
+                            class="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-gray-50 @error('new_password') border-red-400 @enderror"
+                        />
+                        @error('new_password')
+                            <p class="text-xs text-red-500 mt-1 ml-1">{{ $message }}</p>
+                        @enderror
                     </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Confirm New Password</label>
+                        <input
+                            type="password"
+                            wire:model.defer="new_password_confirmation"
+                            placeholder="••••••••"
+                            class="w-full px-4 py-3 rounded-2xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent bg-gray-50"
+                        />
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-sm font-semibold px-8 py-3 rounded-2xl transition-all shadow-lg shadow-indigo-200"
+                        wire:loading.attr="disabled"
+                    >
+                        <span wire:loading.remove>Update password</span>
+                        <span wire:loading class="hidden">Updating...</span>
+                    </button>
+
+                </form>
+            @else
+                <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl">
+                    <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <p class="text-sm text-gray-400">Password last changed: never</p>
                 </div>
-            </div>
+            @endif
+        </div>
 
-            <div class="form-actions">
-                <button type="submit" class="btn-primary" wire:loading.attr="disabled" wire:loading.class="loading">
-                    <span wire:loading.remove wire:target="updatePassword">Update password</span>
-                    <span wire:loading wire:target="updatePassword">Updating…</span>
-                    <svg wire:loading.remove wire:target="updatePassword" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
-                    </svg>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    {{-- ── Danger Zone ── --}}
-    <div class="profile-card danger-card" style="margin-top: 1.5rem;">
-        <div class="section-label danger-label">Danger zone</div>
-        <p style="font-size:0.875rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-            Once you delete your account, all of your notes and data will be permanently removed. This action cannot be undone.
-        </p>
-        <button type="button"
-            onclick="confirm('Are you sure? This cannot be undone.') && document.getElementById('deleteAccountForm').submit()"
-            class="btn-danger">
-            Delete my account
-        </button>
-        <form id="deleteAccountForm" method="POST" action="{{ route('profile.destroy') }}" style="display:none;">
-            @csrf
-            @method('DELETE')
-        </form>
     </div>
 </div>
-
-<style>
-    :root {
-        --lavender-soft: #ede8f5;
-        --lavender-mid: #c9b8e8;
-        --violet: #7c3aed;
-        --violet-dark: #6d28d9;
-        --violet-light: #a78bfa;
-        --surface: #ffffff;
-        --text-primary: #1a1523;
-        --text-muted: #6b7280;
-        --border: #e5e7eb;
-        --input-bg: #f9f8fc;
-    }
-
-    .profile-card {
-        background: var(--surface);
-        border-radius: 24px;
-        padding: 2rem;
-        box-shadow: 0 4px 24px rgba(124, 58, 237, 0.07), 0 1px 3px rgba(0,0,0,0.04);
-        border: 1px solid rgba(124,58,237,0.06);
-    }
-
-    .profile-card-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.75rem;
-        padding-bottom: 1.5rem;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .avatar-wrap {
-        position: relative;
-        flex-shrink: 0;
-    }
-
-    .avatar {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--violet-light), var(--violet));
-        color: white;
-        font-size: 1.375rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'DM Serif Display', serif;
-    }
-
-    .avatar-ring {
-        position: absolute;
-        inset: -3px;
-        border-radius: 50%;
-        border: 2px solid var(--violet-light);
-        opacity: 0.5;
-    }
-
-    .profile-name {
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--text-primary);
-    }
-
-    .profile-email {
-        font-size: 0.8125rem;
-        color: var(--text-muted);
-        margin-top: 0.1rem;
-    }
-
-    .section-label {
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--violet);
-        margin-bottom: 1.25rem;
-    }
-
-    .danger-label { color: #dc2626; }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0 1rem;
-    }
-
-    @media (max-width: 640px) {
-        .form-grid { grid-template-columns: 1fr; }
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-group label {
-        display: block;
-        font-size: 0.8rem;
-        font-weight: 500;
-        color: var(--text-muted);
-        margin-bottom: 0.35rem;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
-    }
-
-    .input-wrap { position: relative; }
-
-    .input-wrap .icon {
-        position: absolute;
-        left: 0.9rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--lavender-mid);
-        pointer-events: none;
-        width: 16px;
-        height: 16px;
-    }
-
-    .input-wrap input {
-        width: 100%;
-        background: var(--input-bg);
-        border: 1.5px solid var(--border);
-        border-radius: 12px;
-        padding: 0.75rem 1rem 0.75rem 2.4rem;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.9375rem;
-        color: var(--text-primary);
-        transition: border-color 0.2s, box-shadow 0.2s;
-        outline: none;
-    }
-
-    .input-wrap input::placeholder { color: #c4b5d8; }
-
-    .input-wrap input:focus {
-        border-color: var(--violet-light);
-        background: #fff;
-        box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.18);
-    }
-
-    .field-error {
-        font-size: 0.78rem;
-        color: #dc2626;
-        margin-top: 0.3rem;
-        padding-left: 0.25rem;
-    }
-
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 0.5rem;
-    }
-
-    .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--violet);
-        color: #fff;
-        border: none;
-        border-radius: 12px;
-        padding: 0.7rem 1.4rem;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.9rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
-    }
-    .btn-primary:hover {
-        background: var(--violet-dark);
-        transform: translateY(-1px);
-        box-shadow: 0 6px 16px rgba(124, 58, 237, 0.32);
-    }
-    .btn-primary:disabled, .btn-primary.loading {
-        opacity: 0.65;
-        cursor: not-allowed;
-        transform: none;
-    }
-    .btn-primary svg { width: 16px; height: 16px; }
-
-    .danger-card {
-        border-color: #fee2e2;
-        background: #fffbfb;
-    }
-
-    .btn-danger {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: transparent;
-        color: #dc2626;
-        border: 1.5px solid #fca5a5;
-        border-radius: 12px;
-        padding: 0.65rem 1.25rem;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: background 0.2s, border-color 0.2s;
-    }
-    .btn-danger:hover {
-        background: #fef2f2;
-        border-color: #dc2626;
-    }
-</style>

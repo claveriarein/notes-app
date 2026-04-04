@@ -16,14 +16,16 @@
             <div class="flex items-center gap-4">
 
                 {{-- Avatar + name --}}
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                        <span class="text-xs font-bold text-indigo-600">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        </span>
-                    </div>
+                <a href="{{ route('profile') }}" class="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                    @if (Auth::user()->profile_photo)
+                        <img src="{{ asset('storage/' . Auth::user()->profile_photo) }}" class="w-8 h-8 rounded-full object-cover border-2 border-indigo-100" alt="Profile"/>
+                    @else
+                        <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                            <span class="text-xs font-bold text-indigo-600">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</span>
+                        </div>
+                    @endif
                     <span class="text-sm font-medium text-gray-700 hidden sm:block">{{ Auth::user()->name }}</span>
-                </div>
+                </a>
 
                 {{-- Divider --}}
                 <div class="w-px h-5 bg-gray-200"></div>

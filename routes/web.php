@@ -9,6 +9,7 @@ use App\Livewire\Notes\NoteList;
 use App\Livewire\Notes\NoteCreate;
 use App\Livewire\Notes\NoteEdit;
 use App\Livewire\Notes\GuestNotes;
+use App\Livewire\Profile;
 
 // Serve Livewire JS directly
 Route::get('/livewire/livewire.min.js', function () {
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/notes', NoteList::class)->name('notes');
     Route::get('/notes/create', NoteCreate::class)->name('notes.create');
     Route::get('/notes/{note}/edit', NoteEdit::class)->name('notes.edit');
+    Route::get('/profile', Profile::class)->name('profile');  // ← add this
 });
 
 Route::post('/logout', function () {
