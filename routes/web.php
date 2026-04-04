@@ -8,6 +8,7 @@ use App\Livewire\Landing;
 use App\Livewire\Notes\NoteList;
 use App\Livewire\Notes\NoteCreate;
 use App\Livewire\Notes\NoteEdit;
+use App\Livewire\Notes\GuestNotes;
 
 // Serve Livewire JS directly
 Route::get('/livewire/livewire.min.js', function () {
@@ -27,6 +28,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
 });
+
+// Add this before the auth middleware group
+Route::get('/try', GuestNotes::class)->name('guest.notes');
 
 Route::middleware('auth')->group(function () {
     Route::get('/notes', NoteList::class)->name('notes');

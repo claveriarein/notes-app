@@ -12,7 +12,7 @@ class Landing extends Component
         if (Auth::check()) {
             return redirect()->route('notes');
         }
-        return redirect()->route('register');
+        return redirect()->route('guest.notes');
     }
 
     public function render()
